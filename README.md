@@ -69,34 +69,43 @@ The action can also be called from code, like this: `viewInstance.alertMessage()
 
 ## View instances
 
-View instances are functions. View instances also have static, public properties, like actions. And, view instances have an internal private state with observable properties. This requires some explanation. Interacting with the observable properties is designed to mimic interacting with standard, unobservable JavaScript objects.
+View instances are functions, but often behave like objects. This requires some explanation. View instances have private, observable properties, as the `message` property in the code above. Observable properties are accessed with function syntax. View instances also have public, unobservable properties, as the `alertMessage` action in the code above. Unobservable properties are accessed with object syntax.
+
+Interacting with the observable properties is designed to mimic interacting with standard, unobservable object properties.
 
 ```javascript
-// read observable property value
+// get observable property value
 var value = viewInstance('property');
-// read public, unobservable property value
+
+// get unobservable property value
 var value = viewInstance['property'];
 
-// write to observable property value
+// set observable property value
 viewInstance('property', value);
-// read to public, unobservable property value
+
+// set unobservable property value
 viewInstance['property'] = value;
-
-// set all observable property values
-viewInstance('property', value);
-
 ```
+The point of having observable properties is that we can register observers; functions that are called whenever an observable property is set.
 
-
-
-
-
-The `message` property of the view instance is observable, which means that we can listen and respond to changes. To listen to changes to observable properties, simply pass an observer function to the view instance, like this:
+To listen to changes to observable properties, simply pass an observer function to the view instance, like this:
 
 ```javascript
 viewInstance(function(property, value){
     console.log('The property ' + property + ' was just set to the value ' + value)
 });
+```
+
+If you want to unregister an observer, keep a reference to its unregistration function when it is set. This function can be called later to unregister the observer.
+
+```javascript
+// register an observer, keep a reference to its unregistration function
+var unregisterFunction = viewInstance(function(property, value){
+    console.log('The property ' + property + ' was just set to the value ' + value)
+});
+
+// unregister the observer
+unregisterFunction();
 ```
 
 To get an object copy with the current state of the observable properties, simply call the view instance like this:
