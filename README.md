@@ -25,7 +25,7 @@ In the next line, the code `viewInstance('message', 'Have we met before?')` sets
 
 ## User interaction
 
-View instances eases communcication between HTML and JavaScript, in particular when handling user interaction. In the next example, we add a text input, which is bound to the `message` property by the attribute `djv="bind: message"`.
+View instances ease communication between HTML and JavaScript, in particular when handling user interaction. In the next example, we add a text input, bound to the `message` property by the attribute `djv="bind: message"`.
 
 ```html
 <div id="viewDiv">
@@ -42,9 +42,9 @@ var viewInstance = djv('viewDiv')();
 viewInstance('message', 'Have we met before?');
 ```
 
-Now, the `message` property is immediately updated when something is written in the textbox.
+Now, the `message` property is immediately updated when something is written in the textbox. Binding is two-way, whenever the `message` property is set by other code, it is immediately reflected in the textbox as well.
 
-We can also set actions on view instances, which can be called by setting event handlers on input elements, like the attribute `djv="click: alertMessage"` in the next example:
+We can also set actions on view instances, which can be called from event handlers on input elements, such as the attribute `djv="click: alertMessage"` in the next example:
 ```html
 <div id="viewDiv">
     <p>
@@ -69,9 +69,13 @@ The action can also be called from code, like this: `viewInstance.alertMessage()
 
 ## View instances
 
-View instances are functions, but often behave like objects. This requires some explanation. View instances have private, observable properties, as the `message` property in the code above. Observable properties are accessed with function syntax. View instances also have public, unobservable properties, as the `alertMessage` action in the code above. Unobservable properties are accessed with object syntax.
+View instances are functions, but often behave more like objects. This requires some explanation.
 
-Interacting with the observable properties is designed to mimic interacting with standard, unobservable object properties.
+View instances have private, observable properties, as the `message` property in the code above. These observable properties are accessed with function syntax.
+
+View instances also have public, unobservable properties, as the `alertMessage` action in the code above. These properties are accessed with object syntax.
+
+Interacting with the observable properties is designed to mimic interacting with standard, unobservable object properties, as shown here:
 
 ```javascript
 // get observable property value
@@ -86,22 +90,36 @@ viewInstance('property', value);
 // set unobservable property value
 viewInstance['property'] = value;
 ```
+
+And, accessing the full private state can be done as follows:
+
+```javascript
+var stateObject = {'propertyA': value1, 'propertyB': value 2 /* ... */};
+
+// set all observable properties from stateObject
+viewInstance(stateObject);
+
+// get a copy of the current state
+stateObject = viewInstance();
+```
+
 The point of having observable properties is that we can register observers; functions that are called whenever an observable property is set.
 
 To listen to changes to observable properties, simply pass an observer function to the view instance, like this:
 
 ```javascript
 viewInstance(function(property, value){
-    console.log('The property ' + property + ' was just set to the value ' + value)
+  console.log('The property ' + property +
+    ' was just set to the value ' + value)
 });
 ```
 
-If you want to unregister an observer, keep a reference to its unregistration function when it is set. This function can be called later to unregister the observer.
+To unregister an observer, keep a reference to its unregistration function when it is set. This function can be called later to unregister the observer.
 
 ```javascript
 // register an observer, keep a reference to its unregistration function
 var unregisterFunction = viewInstance(function(property, value){
-    console.log('The property ' + property + ' was just set to the value ' + value)
+    /* executes whenever an observable property is set */
 });
 
 // unregister the observer
@@ -115,6 +133,13 @@ var observableProperties = viewInstance();
 // observableProperties is now the object {message: 'Have we met before?'}
 ```
 
+View instances do not have a notification function that can be called directly. To manually trigger notification of a single property, call `viewInstance('property', viewInstance('property'))`. To manually trigger notification of all current properties, call `viewInstance(viewInstance())`.
+
+To delete an observable property, set it to `undefined`. Then, it will be excluded when calling `viewInstance()`. When setting an observable property to `undefined`, all observers are still notified.
+
+## View constructors
+
+## Templates
 
 ## The basic parts of coding with dejavu
 
