@@ -44,7 +44,7 @@ viewInstance('message', 'Have we met before?');
 
 Now, the `message` property is immediately updated when something is written in the textbox. Binding is two-way, whenever the `message` property is set by other code, it is immediately reflected in the textbox as well.
 
-We can also set actions on view instances, which can be called from event handlers on input elements, such as the attribute `djv="click: alertMessage"` in the next example:
+We can set actions on view instances, which can be called from event handlers on input elements, such as the attribute `djv="click: alertMessage"` in the next example:
 ```html
 <div id="viewDiv">
     <p>
@@ -69,7 +69,7 @@ The action can also be called from code, like this: `viewInstance.alertMessage()
 
 ## View instances
 
-View instances are functions, but often behave more like objects. This requires some explanation.
+View instances are the most important part of coding with `dejavu.js`. View instances are functions, but often behave more like objects. This requires some explanation.
 
 View instances have private, observable properties, as the `message` property in the code above. These observable properties are accessed with function syntax.
 
@@ -126,23 +126,31 @@ var unregisterFunction = viewInstance(function(property, value){
 unregisterFunction();
 ```
 
-To get an object copy with the current state of the observable properties, simply call the view instance like this:
+View instances do not have a notification function that can be called directly.
+To manually trigger notification of a single property, call `viewInstance('property', viewInstance('property'))`.
+To manually trigger notification of all current properties, call `viewInstance(viewInstance())`.
 
-```javascript
-var observableProperties = viewInstance();
-// observableProperties is now the object {message: 'Have we met before?'}
-```
-
-View instances do not have a notification function that can be called directly. To manually trigger notification of a single property, call `viewInstance('property', viewInstance('property'))`. To manually trigger notification of all current properties, call `viewInstance(viewInstance())`.
-
-To delete an observable property, set it to `undefined`. Then, it will be excluded when calling `viewInstance()`. When setting an observable property to `undefined`, all observers are still notified.
+To delete an observable property, set it to `undefined`. Then, it will be omitted
+when reading the current state by calling `viewInstance()`. When setting an observable property to `undefined`,
+all observers are still notified.
 
 ## View constructors
 
+In the first example, there was a double function call when creating the view
+instance:
+
+```javascript
+var viewInstance = djv('viewDiv')();
+```
+
+This code could be rewritten to illustrate the three basic parts of coding with `dejavu.js`: the dejavu compiler `djv()`, view constructors, and view instances:
+
+```javascript
+var viewConstructor = djv('viewDiv');
+var viewInstance = viewConstructor();
+```
+The compiler `djv()`, creates view constructors from templates. View
+constructors are functions that create and mount view instances. In this code, the view constructor reads `#viewDiv` as a template. Then, when called, the view constructor creates a new view instance and mounts it to the same element,
+`#viewDiv`, that the template was read from.
+
 ## Templates
-
-## The basic parts of coding with dejavu
-
-Now it is time to give a more detailed explanation of coding with dejavu. (=
-compiler, constructors, instances) (observable, private properties and stat=
-ic, public properties of instances)
