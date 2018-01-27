@@ -71,7 +71,7 @@ The action can also be called from code, like this: `viewInstance.alertMessage()
 
 View instances are the most important part of coding with `dejavu.js`. View instances are functions, but often behave more like objects. This requires some explanation.
 
-View instances have private, observable properties, as the `message` property in the code above. These observable properties are accessed with function syntax.
+View instances have private, observable properties, as the `message` property in the code above. These properties can be bound and displayed in the HTML template. These observable properties are accessed with function syntax.
 
 View instances also have public, unobservable properties, as the `alertMessage` action in the code above. These properties are accessed with object syntax.
 
@@ -102,6 +102,25 @@ viewInstance(stateObject);
 // get a copy of the current state
 stateObject = viewInstance();
 ```
+
+### Special methods and properties
+
+#### `viewInstance.$(localID)`
+
+#### `viewInstance.$destroy()`
+
+#### `viewInstance.$parent`
+#### `viewInstance.$children`
+#### `viewInstance._`
+
+#### Hooks
+
+* `viewInstance.$update = function(property, value){}`
+* `viewInstance.$updated = function(property, value){}`
+* `viewInstance.$mount = function(){}`
+* `viewInstance.$key = function(event, keycode, element){}`
+
+### Observing a view instance
 
 The point of having observable properties is that we can register observers; functions that are called whenever an observable property is set.
 
@@ -154,3 +173,17 @@ constructors are functions that create and mount view instances. In this code, t
 `#viewDiv`, that the template was read from.
 
 ## Templates
+
+## General helper functions
+
+#### `djv.elm(ID)`
+
+If ID is an object with an `innerHTML` property of type string, it returns this object. Otherwise, returns the result of `document.getELementById(ID)`.
+
+#### `djv.keydown(event, keycode[, preventDefault])`
+
+Helper function to test whether an event is of type `keydown` with the specified `keycode`. Returns a boolean. The optional `preventDefault` argument is a boolean to specify if the event default should be prevented if the keycode matches.
+
+#### `djv.focus(viewInstance, localID)`
+
+#### `djv.obs()`
