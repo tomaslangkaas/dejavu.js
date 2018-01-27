@@ -16,6 +16,7 @@ To illustrate coding with `dejavu.js`, let us start with a few brief examples.
 
 ```javascript
 var viewInstance = djv('viewDiv')();
+
 viewInstance('message', 'Have we met before?');
 ```
 
@@ -29,12 +30,12 @@ View instances ease communication between HTML and JavaScript, in particular whe
 
 ```html
 <div id="viewDiv">
-    <p>
-        <input type="text" djv="bind: message" />
-    </p>
-    <p>
-        The message is: {{message}}
-    </p>
+  <p>
+    <input type="text" djv="bind: message" />
+  </p>
+  <p>
+    The message is: {{message}}
+  </p>
 </div>
 ```
 ```javascript
@@ -47,19 +48,20 @@ Now, the `message` property is immediately updated when something is written in 
 We can set actions on view instances, which can be called from event handlers on input elements, such as the attribute `djv="click: alertMessage"` in the next example:
 ```html
 <div id="viewDiv">
-    <p>
-        <input type="text" djv="bind: message" />
-        <input type="button" djv="click: alertMessage" />
-    </p>
+  <p>
+    <input type="text" djv="bind: message" />
+    <input type="button" djv="click: alertMessage" />
+  </p>
 </div>
 ```
 ```javascript
 var viewInstance = djv('viewDiv', {
-    alertMessage: function(){
-        var message = this('message');
-        alert(message);
-    }
+  alertMessage: function(){
+    var message = this('message');
+    alert(message);
+  }
 })();
+
 viewInstance('message', 'Have we met before?');
 ```
 
@@ -107,18 +109,32 @@ stateObject = viewInstance();
 
 #### `viewInstance.$(localID)`
 
+Access the elements by their local id, as set by `djv="id: localID"`.
+
 #### `viewInstance.$destroy()`
 
+Destroys the view instance, cleans up all internal references. Use this to avoid
+memory leaks when removing view instances.
+
 #### `viewInstance.$parent`
+
+Reference to the parent view instance of views mounted to another view. This
+property does not exist for other view instances.
+
 #### `viewInstance.$children`
+
+Dictionary to the internal IDs of all current child view instances.
+
 #### `viewInstance._`
 
-#### Hooks
+The internal ID of the current view instance. For internal use.
 
-* `viewInstance.$update = function(property, value){}`
-* `viewInstance.$updated = function(property, value){}`
-* `viewInstance.$mount = function(){}`
-* `viewInstance.$key = function(event, keycode, element){}`
+### Hooks
+
+#### `viewInstance.$update = function(property, value){}`
+#### `viewInstance.$updated = function(property, value){}`
+#### `viewInstance.$mount = function(){}`
+#### `viewInstance.$key = function(event, keycode, element){}`
 
 ### Observing a view instance
 
@@ -178,7 +194,7 @@ constructors are functions that create and mount view instances. In this code, t
 
 #### `djv.elm(ID)`
 
-If ID is an object with an `innerHTML` property of type string, it returns this object. Otherwise, returns the result of `document.getELementById(ID)`.
+If ID is an object with an `innerHTML` property of type string, it returns this object. Otherwise, returns the result of `document.getElementById(ID)`.
 
 #### `djv.keydown(event, keycode[, preventDefault])`
 
@@ -186,4 +202,10 @@ Helper function to test whether an event is of type `keydown` with the specified
 
 #### `djv.focus(viewInstance, localID)`
 
+Helper function for setting focus to local elements of view instances
+(certain old browsers requires a workaraound).
+
 #### `djv.obs()`
+
+Constructor for observable objects. Used internally to construct view instances.
+Can be used to create subscriber/publisher patterns or simple event hubs.
