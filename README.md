@@ -190,6 +190,15 @@ constructors are functions that create and mount view instances. In this code, t
 
 ## Templates
 
+```html
+<label djv="for: id"></label>
+<span djv="bind: property, format: formattingFunction">
+{{property | formattingFunction}}
+<input djv="click: action, keydown: action, keypress: action">
+<input djv="id: localID, parse: parsingFunction">
+<input type="radio" djv="radio: radioGroupID">
+```
+
 ## General helper functions
 
 #### `djv.elm(ID)`
