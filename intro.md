@@ -1,22 +1,22 @@
 # Coding with `dejavu.js`
 
-`dejavu.js` is small JavaScript library for coding the view layer in JavaScript applications. It is written in ECMAScript 3 and even supports browsers back to IE6. The library is kept small, with a minimum of functionality out of the box.
+`dejavu.js` is small JavaScript library for coding the view layer in JavaScript applications. It is written in ECMAScript 3 and  supports browsers back to IE6. The library is kept small, with a minimum of functionality out of the box.
 
 Here, we will go through the functionality of `dejavu.js` with code examples that work as well in IE6 as in modern browsers.
 
 ## Observable objects
 
-`dejavu.js` is built on its own concept of observable objects, so we need to be familiar with this first. You can use the factory function `djv.obs()` to build your own observable objects.
+`dejavu.js` is built on its own type of observable objects, so we need to be familiar with these objects first. The factory function `djv.obs()` creates observable objects.
 
-| Operation | Standard JavaScript | `djv.obs()` |
-| ----------| ------------- | ------------- |
-| Create empty object| `var obj = {}`  | `var obj = djv.obs()`  |
-| Create object with data| `var obj = {a: 2, b: 7}`  | `var obj = djv.obs({a: 2, b: 7})`  |
-| Set property | `obj['a'] = 5`  | `obj('a', 5)`  |
-| Get property | `obj['a']`  | `obj('a')`  |
-| Clear property | `delete obj['a']`  | `obj('a', undefined)`  |
+| Operation               | Standard JavaScript      | `djv.obs()`                        |
+| ----------------------- | ------------------------ | ---------------------------------- |
+| Create empty object     | `var obj = {}`           | `var obj = djv.obs()`              |
+| Create object with data | `var obj = {a: 2, b: 7}` | `var obj = djv.obs({a: 2, b: 7})`  |
+| Set property            | `obj['a'] = 5`           | `obj('a', 5)`                      |
+| Get property            | `obj['a']`               | `obj('a')`                         |
+| Clear property          | `delete obj['a']`        | `obj('a', undefined)`              |
 
-Now, the point of observable objects is to attach listeners that can observe and respond to changes in the object. To attach a listener, simply provide an observer function to the observable object:
+The point of observable objects is to attach listeners that can observe and respond to changes in the object. To attach a listener, simply provide an observer function to the observable object:
 
 ```javascript
 var obj = djv.obs();
@@ -26,11 +26,23 @@ obj(function(property, value){
 
 ```
 
-There is a bit more to learn about observable objects than this, but we can save that for later.
+There is a bit more to learn about observable objects, but we will save that for later.
 
 ## Coding a simple view
 
+First, let us create a view factory function. The `djv()` function takes a template string as its first argument and returns a factory function we will use later.
 
+```javascript
+var viewFactory = djv('Hello, {{name}}!');
+```
+Then, with this HTML:
+```html
+<div id="viewContainer"></div>
+```
+We can create a view instance as follows:
+```javascript
+var viewInstance = viewFactory('viewContainer');
+```
 
 
 Coding with <cite>dejavu</cite> is meant to be easy. We start with a template, for instance like this:
