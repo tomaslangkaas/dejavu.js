@@ -1,6 +1,6 @@
 (function(window, document) {
   window["djv"] = djv;
-  djv.version = "0.2.7";
+  djv.version = "0.2.8";
 
   // active views
 
