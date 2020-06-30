@@ -9,7 +9,7 @@
   // view instance id generator
 
   var IDPrefix = "djv",
-    IDCounter = 1;
+      IDCounter = 1;
 
   function generateID() {
     return IDPrefix + IDCounter++;
@@ -43,7 +43,6 @@
     elm.onkeydown = elm.onkeypress = elm.onkeyup = elm.onclick = elm.oninput = elm.onfocusout = remove
       ? null
       : handler;
-
     elm[(remove = (remove ? "remove" : "add") + "EventListener")] &&
       elm[remove]("blur", handler, true);
   }
@@ -102,8 +101,9 @@
     defaultState = defaultState || {};
 
     var bindings = {},
-      localIDs = {},
-      template = elm(templateStringOrID);
+        localIDs = {},
+        template = elm(templateStringOrID);
+    
     template = parseTemplate(
       template ? getHTML(template) : templateStringOrID,
       bindings,
@@ -118,7 +118,7 @@
       defaultState
     ];
     //var viewInstance = viewClass(parentViewInstance, parentLocalID)
-    //                   OR viewClass([parentElementOrId]) // root container
+    //                   OR viewClass(parentElementOrId)
     function viewConstructor(parent, parentID, clear, viewID) {
       var viewInstance = obs(),
         children,
@@ -156,11 +156,10 @@
         // TODO: transform to mixin
         var viewInstance = this,
             viewID = viewInstance["_"],
-          domElm = elm(viewID + "_1"),
-          parent = domElm.parentNode,
-          childrenID;
-          runFn(this, '$unmount');
-        // domElm && parent.removeChild(domElm); //DESTROY children first!!!!
+            domElm = elm(viewID + "_1"),
+            parent = domElm.parentNode,
+            childrenID;
+        runFn(this, '$unmount');
         if (!viewInstance.$parent) {
           // is root view
           setHandler(parent, true);
@@ -173,8 +172,6 @@
         domElm && parent.removeChild(domElm);
         views[viewID] = null;
       };
-
-      // root or child view?
 
       if (parentID && parent.$) {
         // child view
@@ -189,7 +186,6 @@
       // $mount hook
       runFn(viewInstance, '$mount');
       
-      //parent.innerHTML = (clear ? "" : parent.innerHTML) + template(viewID);
       setHTML(parent, (clear ? "" : getHTML(parent)) + template(viewID));
       views[viewID] = viewInstance;
 
@@ -204,21 +200,19 @@
 
     function updateViewInstance(prop, val, avoidID) {
       var a = bindings[prop] || [],
-        l = a.length,
-        i = 0,
-        domElm,
-        fun,
-        formatted,
-        tagName,
-        viewID = this._;
+          l = a.length,
+          i = 0,
+          domElm,
+          fun,
+          formatted,
+          tagName,
+          viewID = this._;
       runFn(this, '$update', prop, val);
       for (i; i < l; i++) {
         if (avoidID !== viewID + "_" + a[i] && (domElm = elm(viewID + "_" + a[i]))) {
-          //domElm = elm(viewID + "_" + a[i]);
           tagName = domElm.tagName.toLowerCase();
           formatted =
-            [(fun = attr(domElm, "format")) ? runFn(this, fun, val, domElm) : val] + "";
-            //"" + [(fun = this[attr(domElm, "format")]) ? fun(val) : val]; // run in context => apply to this?
+            [(fun = this[attr(domElm, "format")]) ? runFn(this, fun, val, domElm) : val] + "";
           if (domElm.type === "radio" || domElm.type === "checkbox") {
             domElm.checked = domElm.value === formatted; // val
           } else if (tagName === "input" || tagName === "button") {
@@ -243,8 +237,6 @@
     return viewConstructor;
   }
 
-  // djv.elm(idOrElement); get element by id
-
   function elm(id) {
     return typeof id.innerHTML === "string" ? id : document.getElementById(id);
   }
@@ -255,15 +247,15 @@
 
   // compile regexes only once
   var ptRegEx1 = /\{\{(\w+)(?:[\s\|]+(\w+))?\}\}| djv\=(\"([^\"]*)\"|\'([^\']*)\')|[\x00-\x1f\"\\]/gi,
-    ptRegEx2 = /\s*(\w+)\s*\:\s*(\w+)\s*/g,
-    ptRegEx3 = /^(\s*<[a-z1-6]+)([^>]*>)/i;
+      ptRegEx2 = /\s*(\w+)\s*\:\s*(\w+)\s*/g,
+      ptRegEx3 = /^(\s*<[a-z1-6]+)([^>]*>)/i;
 
   function parseTemplate(str, bindings, localIDs) {
     var IDcounter = 1,
-      regex1 = ptRegEx1, // /\{\{(\w+)(?:[\s\|]+(\w+))?\}\}| djv\=(\"([^\"]*)\"|\'([^\']*)\')|[\x00-\x1f\"\\]/gi,
-      regex2 = ptRegEx2, // /\s*(\w+)\s*\:\s*(\w+)\s*/g;
-      regex3 = ptRegEx3,
-      temp;
+        regex1 = ptRegEx1,
+        regex2 = ptRegEx2,
+        regex3 = ptRegEx3,
+        temp;
     if ((temp = str.match(regex3))) {
       if (!/\sdjv\=[\"\']/.test(temp)) {
         str = str.replace(regex3, '$1 djv=""$2');
@@ -350,7 +342,7 @@
             bind,
             typeof (fun = view[attr(elm, "parse")]) === "function"
               ? fun(val)
-              : val, // what if fn not defined?
+              : val,
             isBlur ? null : id,
             1
           );
@@ -454,8 +446,7 @@ djv.key = (function(djv){
 
   djv.addEvent(document, 'keydown', function(evt){
     var code,
-        elm = djv.target(evt);    
-    //if('input textarea select label'.indexOf(elm.tagName.toLowerCase()) < 0){ 
+        elm = djv.target(evt);     
     if(!djv.writable(elm) || elm.tagName.toLowerCase() != "select"){
       code = 8 * (evt.keyCode || evt.charCode) +
              4 * ~~evt.shiftKey + 
