@@ -1,6 +1,6 @@
 (function(window, document) {
   window["djv"] = djv;
-  djv.version = "0.2.8";
+  djv.version = "0.2.9";
 
   // active views
 
@@ -29,7 +29,7 @@
   }
 
   function runFn(obj, fn, arg1, arg2, arg3) {
-    fn && typeof obj[fn] === "function" && obj[fn](arg1, arg2, arg3);
+    return fn && typeof obj[fn] === "function" && obj[fn](arg1, arg2, arg3);
   }
 
   function writable(elm){
@@ -211,8 +211,8 @@
       for (i; i < l; i++) {
         if (avoidID !== viewID + "_" + a[i] && (domElm = elm(viewID + "_" + a[i]))) {
           tagName = domElm.tagName.toLowerCase();
-          formatted =
-            [(fun = this[attr(domElm, "format")]) ? runFn(this, fun, val, domElm) : val] + "";
+          fun = attr(domElm, "format");
+          formatted = "" + [this[fun] ? runFn(this, fun, val, domElm) : val];
           if (domElm.type === "radio" || domElm.type === "checkbox") {
             domElm.checked = domElm.value === formatted; // val
           } else if (tagName === "input" || tagName === "button") {
@@ -246,7 +246,7 @@
   // parseTemplate(templateString, bindings, localIDs); internal template parser
 
   // compile regexes only once
-  var ptRegEx1 = /\{\{(\w+)(?:[\s\|]+(\w+))?\}\}| djv\=(\"([^\"]*)\"|\'([^\']*)\')|[\x00-\x1f\"\\]/gi,
+  var ptRegEx1 = /\{\{\s*(\w+)(?:[\s\|]+(\w+))?\s*\}\}| djv\=(\"([^\"]*)\"|\'([^\']*)\')|[\x00-\x1f\"\\]/gi,
       ptRegEx2 = /\s*(\w+)\s*\:\s*(\w+)\s*/g,
       ptRegEx3 = /^(\s*<[a-z1-6]+)([^>]*>)/i;
 
