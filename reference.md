@@ -1,18 +1,15 @@
 
-## djv
+# `dejavu` reference
 
 The `dejavu` library consists of one single global, `djv`, with a set of methods and properties. `djv` is also a callable function, used to produce view factories.
 
-### djv()
-```javascript
-djv(template);
-djv(template, public);
-djv(template, public, private);
-```
+## djv properties
 
 ### djv.version
 
 String with current library version.
+
+## djv methods
 
 ### djv.attr(DOMelement, attribute)
 
@@ -40,8 +37,26 @@ Helper function. Calls the `focus()` method on the DOM element with the specifie
 
 ### djv.$(id)
 
-Helper function. Unless the id argument has an `innerHTML` property of type string, the function returns the result of calling `document.getElementById(id)`.
+Helper function. If the id argument has an `innerHTML` property of type string, it returns id. Otherwise, it returns the result of calling `document.getElementById(id)`.
 
-### djv._pt
-### djv.obs
-### djv.key
+### djv.\_pt
+
+Reference to the internal `parseTemplate` function. Used for debugging.
+
+### djv.obs()
+
+Helper function. Factory for observable objects, based on the library [`obs.js`](https://github.com/tomaslangkaas/obs.js/blob/gh-pages/README.md).
+
+### djv.key()
+
+TBW.
+
+## djv function
+
+The `djv()` function is defines and creates views. Technically, `djv()` is called with arguments that define a view, then returns a view factory. This view factory is called to instantiate specific instances of the defined view and mount the instance to DOM. View instances provide an interface for JavaScript to interact with the mounted view.
+
+```javascript
+djv(template);
+djv(template, public);
+djv(template, public, private);
+```
